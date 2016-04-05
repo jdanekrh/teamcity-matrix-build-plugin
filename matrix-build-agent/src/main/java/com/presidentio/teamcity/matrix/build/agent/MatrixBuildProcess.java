@@ -154,10 +154,16 @@ public class MatrixBuildProcess implements BuildProcess, Runnable {
         //generate properties
         com.presidentio.teamcity.rest.dto.Properties childBuildProperties = new com.presidentio.teamcity.rest.dto.Properties();
         int parametersIdentifier = buildNumber;
+        Tags tags = new Tags();
         Map<String, String> reportBuildParameters = new HashMap<>();
         for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue()[parametersIdentifier % entry.getValue().length];
+
+            Tag tag = new Tag();
+            tag.setName(value);
+            tags.getTag().add(tag);
+
             Property property = new Property();
             property.setName(key);
             property.setValue(value);
@@ -168,7 +174,6 @@ public class MatrixBuildProcess implements BuildProcess, Runnable {
         build.setProperties(childBuildProperties);
 
         //add tag
-        Tags tags = new Tags();
         Tag tag = new Tag();
         tag.setName("matrix");
         tags.getTag().add(tag);
